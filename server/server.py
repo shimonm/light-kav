@@ -4,7 +4,7 @@ import tornado.options
 
 import logic
 import auth
-import transacsion_listener
+import ride_record
 import c_lightning
 
 from classes import UserExists
@@ -56,8 +56,10 @@ class OnPaymentHandler(web.RequestHandler):
 
     def post(self):
         data = json.loads(self.request.body)
-        transacsion_listener.on_payment_event(data)
-
+        ride_record.record_payed_ride(data)
+        # self.write(json.dumps({'success': True}))
+        import pprint
+        pprint.pprint(data)
         data = {'success': True,
                 'data': data}
         self.write(json.dumps(data))

@@ -3,6 +3,7 @@ import psycopg2
 from classes import Ride, User, NoSuchUser
 
 url = '192.168.1.20'
+# url = '192.168.8.113'
 dbname = 'lightkavdb'
 _connection = psycopg2.connect("dbname='{}' user='postgres' host='{}' password='lightkavwins'".format(dbname, url))
 
@@ -14,7 +15,7 @@ def select_all_users():
     return [User(*r) for r in rows]
 
 
-def select_users_by_token(token):
+def select_user_by_token(token):
     cur = _connection.cursor()
     cur.execute('SELECT * from public.user_base WHERE token={}'.format(token))
     rows = cur.fetchall()
@@ -25,7 +26,7 @@ def select_users_by_token(token):
 
 def select_rides_by_user_token(user_token):
     cur = _connection.cursor()
-    user_id = select_users_by_token(user_token)[0]
+    user_id = select_user_by_token(user_token)[0]
     cur.execute('SELECT * from public.rides WHERE user_id={}'.format(user_id))
     rows = cur.fetchall()
     return [Ride(*r) for r in rows]
@@ -36,6 +37,16 @@ def select_all_rides():
     cur.execute('SELECT * from public.rides')
     rows = cur.fetchall()
     return [Ride(*r) for r in rows]
+
+
+def insert_empty_ride(token, ride_code):
+    user = select_user_by_token(token)
+    user_obj = User(*user)
+    cur = _connection.cursor()
+    cur.executemany("""INSERT INTO public.rides(user_id,  ride_code) 
+                                        VALUES ({user_id}), ({ride_code})""".format(
+                                        user_id=user_obj.id, ride_code=ride_code
+    ))
 
 
 def insert_ride(ride):
