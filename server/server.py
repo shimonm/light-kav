@@ -8,6 +8,8 @@ import config
 import transacsion_listener
 import c_lightning
 
+from classes import UserExists
+
 
 class HowMuchHandler(web.RequestHandler):
     def get(self):
@@ -17,11 +19,11 @@ class HowMuchHandler(web.RequestHandler):
         data = json.loads(self.request.body)
         ride_code = data['ride_code']
         user_token = data['user_token']
-        time_stamp = datetime.now()
-        amount_to_pay = logic.calculate_amount(user_token, ride_code, time_stamp)
+        amount_to_pay, saved = logic.calculate_amount_and_saved(user_token, ride_code)
         payment_request = c_lightning.get_payment_request(amount_to_pay)
         data = {'success': True,
                 'data': {'amount': amount_to_pay,
+                         'saved': saved,
                          'payment_request': payment_request}
                 }
         self.write(json.dumps(data))
@@ -38,10 +40,11 @@ class RegisterHandler(web.RequestHandler):
 
     def post(self):
         data = json.loads(self.request.body)
-        success, token = auth.register_new_user(data['username'], data['password'])
-        data = {'success': success}
-        if success:
-            data['token'] = token
+        try:
+            success, token = auth.register_new_user(data['username'], data['password'])
+            data = {'success': success, 'data': token}
+        except UserExists as e:
+            data = {'success': False, 'error': e},
 
         self.write(json.dumps(data))
 

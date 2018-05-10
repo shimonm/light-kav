@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import config
-from db import
+import db
 
 hour_and_a_half = timedelta(minutes=90)
 
@@ -21,11 +21,11 @@ def _get_this_week(today):
     return today.replace(day=new_day)
 
 
-def calculate_amount(token, ride_code, time_stamp):
-    all_user_rides = db.slect('select * from asdasdasd where token={} AND ride_code={}'.format(
-                                token, ride_code
-    )) or []
+def calculate_amount_and_saved(token, ride_code):
+    ride_price = config.codes_to_prices.get(ride_code, config.default_ride_price)
+    amount = ride_price
 
+    all_user_rides = db.select_rides_by_user_token(token) or []
     now = datetime.now()
     today = now.replace(hour=0, minute=0, second=0, microsecond=0)
     this_week = _get_this_week(today)
@@ -33,25 +33,31 @@ def calculate_amount(token, ride_code, time_stamp):
 
     this_month_rides = all_user_rides.filter(lambda x: x['time'] > this_month)
     payed_this_month = sum([int(r['amount']) for r in this_month_rides])
-    if payed_this_month >= config.max_monthly_amount: # overflow fix
-        return 0
+    if payed_this_month >= config.max_monthly_amount:
+        amount = 0
+    if payed_this_month > config.max_monthly_amount - ride_price:
+        diff = config.max_monthly_amount - payed_this_month
+        amount = diff
 
     this_week_rides = this_month_rides.filter(lambda x: x['time'] > this_week)
     payed_this_week = sum([int(r['amount']) for r in this_week_rides])
     if payed_this_week >= config.max_weekly_amount:
-        return 0
+        amount = 0
+    if payed_this_week > config.max_weekly_amount - ride_price:
+        diff = config.max_weekly_amount - payed_this_week
+        amount = diff
 
     today_rides = this_week.filter(lambda x: x['time'] > today)
     payed_today = sum([int(r['amount']) for r in today_rides])
     if payed_today >= config.max_daily_amount:
-        return 0
+        amount = 0
+    if payed_today >= config.max_daily_amount - ride_price:
+        diff = config.max_daily_amount - payed_today
+        amount = diff
 
     last_hour_and_a_half_rides = all_user_rides.filter(lambda x: x['time'] > now - hour_and_a_half)
     if last_hour_and_a_half_rides:
-        return 0
+        amount = 0
 
-    return config.codes_to_prices.get(ride_code, config.default_ride_price)
-
-
-def get_curr_address():
-    return 'abc'
+    saved = ride_price - amount
+    return amount, saved

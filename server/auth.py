@@ -2,19 +2,19 @@ import hashlib
 import uuid
 
 
+import db
+from classes import UserExists
+
+
 def _get_hash(password):
     salt = uuid.uuid4().hex
     return hashlib.sha512(password + salt).hexdigest()
 
 
-def _search_user(username):
-    # search db
-    return []
-
-
-def register_new_user(name, password):
-    if _search_user(name):
-        token = _get_hash(password)
-        return True, token
+def register_new_user(user_phone_id, password):
+    users = db.select_all_users().filter(lambda u: u.id == user_phone_id)
+    if users:
+        raise UserExists('user {} exists'.format(user_phone_id))
     else:
-        return False, None
+        token = _get_hash(password)
+        return token
