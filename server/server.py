@@ -1,5 +1,6 @@
 from tornado import ioloop, web
 import json
+import tornado.options
 
 import logic
 import auth
@@ -39,8 +40,10 @@ class RegisterHandler(web.RequestHandler):
     def post(self):
         data = json.loads(self.request.body)
         # try:
-        success, token = auth.register_new_user(data['username'], data['password'])
-        data = {'success': success, 'data': token}
+        # success, token = auth.register_new_user(data['username'], data['password'])
+        # data = {'success': success, 'data': token}
+        token = auth.register_new_user(data['username'], data['password'])
+        data = {'success': True, 'data': token}
         # except UserExists as e:
         # data = {'success': False, 'error': e},
 
@@ -67,10 +70,11 @@ def make_app():
         (r"/register", RegisterHandler),
         (r"/howmuch", HowMuchHandler),
         (r"/", MainHandler),
-    ])
+    ], debug=True)
 
 
 if __name__ == "__main__":
+    tornado.options.parse_command_line()
     app = make_app()
     app.listen(8888)
     ioloop.IOLoop.current().start()
