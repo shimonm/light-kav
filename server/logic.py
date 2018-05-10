@@ -31,7 +31,7 @@ def calculate_amount_and_saved(token, ride_code):
     this_week = _get_this_week(today)
     this_month = today.replace(day=1)
 
-    this_month_rides = all_user_rides.filter(lambda x: x['time'] > this_month)
+    this_month_rides = [r for r in all_user_rides if r['time'] > this_month]
     payed_this_month = sum([int(r['amount']) for r in this_month_rides])
     if payed_this_month >= config.max_monthly_amount:
         amount = 0
@@ -39,7 +39,7 @@ def calculate_amount_and_saved(token, ride_code):
         diff = config.max_monthly_amount - payed_this_month
         amount = diff
 
-    this_week_rides = this_month_rides.filter(lambda x: x['time'] > this_week)
+    this_week_rides = [r for r in this_month_rides if r['time'] > this_week]
     payed_this_week = sum([int(r['amount']) for r in this_week_rides])
     if payed_this_week >= config.max_weekly_amount:
         amount = 0
@@ -47,7 +47,7 @@ def calculate_amount_and_saved(token, ride_code):
         diff = config.max_weekly_amount - payed_this_week
         amount = diff
 
-    today_rides = this_week.filter(lambda x: x['time'] > today)
+    today_rides = [r for r in this_week if r['time'] > today]
     payed_today = sum([int(r['amount']) for r in today_rides])
     if payed_today >= config.max_daily_amount:
         amount = 0
@@ -55,7 +55,7 @@ def calculate_amount_and_saved(token, ride_code):
         diff = config.max_daily_amount - payed_today
         amount = diff
 
-    last_hour_and_a_half_rides = all_user_rides.filter(lambda x: x['time'] > now - hour_and_a_half)
+    last_hour_and_a_half_rides = [r for r in all_user_rides if r['time'] > now - hour_and_a_half]
     if last_hour_and_a_half_rides:
         amount = 0
 

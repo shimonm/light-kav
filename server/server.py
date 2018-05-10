@@ -1,10 +1,8 @@
 from tornado import ioloop, web
 import json
-from datetime import datetime
 
 import logic
 import auth
-import config
 import transacsion_listener
 import c_lightning
 
@@ -40,11 +38,11 @@ class RegisterHandler(web.RequestHandler):
 
     def post(self):
         data = json.loads(self.request.body)
-        try:
-            success, token = auth.register_new_user(data['username'], data['password'])
-            data = {'success': success, 'data': token}
-        except UserExists as e:
-            data = {'success': False, 'error': e},
+        # try:
+        success, token = auth.register_new_user(data['username'], data['password'])
+        data = {'success': success, 'data': token}
+        # except UserExists as e:
+        # data = {'success': False, 'error': e},
 
         self.write(json.dumps(data))
 

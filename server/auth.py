@@ -3,7 +3,7 @@ import uuid
 
 
 import db
-from classes import UserExists
+# from classes import UserExists
 
 
 def _get_hash(password):
@@ -12,9 +12,14 @@ def _get_hash(password):
 
 
 def register_new_user(user_phone_id, password):
-    users = db.select_all_users().filter(lambda u: u.id == user_phone_id)
+    users = [u for u in db.select_all_users() if u.id == user_phone_id]
+    # if users:
+    #     raise UserExists('user {} exists'.format(user_phone_id))
+    # else:
+
+    ##### for now this is the behavior
     if users:
-        raise UserExists('user {} exists'.format(user_phone_id))
-    else:
-        token = _get_hash(password)
-        return token
+        return users[0].token
+    ######
+    token = _get_hash(password)
+    return token

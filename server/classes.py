@@ -11,12 +11,13 @@ class Ride:
 
 
 class User:
-    def __init__(self, _id, government_id, last_name, first_name, created):
+    def __init__(self, _id, government_id, last_name, first_name, created, token):
         self.id = _id
         self.government_id = government_id
         self.last_name = last_name
         self.first_name = first_name
         self.created = created
+        self.token = token
 
 
 class NoSuchUser(Exception):

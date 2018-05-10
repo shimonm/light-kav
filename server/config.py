@@ -1,4 +1,3 @@
-egged_address = 'asdasdasdasdasd'
 
 default_ride_price = 6.9
 max_hour_amount = 6.9
