@@ -23,9 +23,6 @@ Light Line Server is built using a powerfull async architecture, ready to scale-
 
 [std3]:https://github.com/ElementsProject/lightning
 [std4]:https://github.com/ElementsProject/lightning-charge
-## Contributors
-
-Let people know how they can dive into the project, include important links to things like issue trackers, irc, twitter accounts if applicable.
 
 ## License
   
