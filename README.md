@@ -13,8 +13,10 @@ The library "react-native-nfc"
 ### Python
 
 
-### postgresql DB
-
+### postgresql DB v.10.0.0
+Holds two tables - user_base and rides.
+- user_base columns: user_id, id_card, last_name, first_name, created_date, token
+- rides columns: id, user_id, ride_code, payment, payment_hash, created_date
 
 ### c-lightning and lightning-charge
 [c-lightning][std] offers a JSON-RPC integration with the Lightning Network to interact with nodes, channels, and payments
