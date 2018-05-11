@@ -9,3 +9,8 @@ max_monthly_amount = 300
 codes_to_prices = {
     100: 6.9
 }
+
+
+ride_codes_to_names = {
+    '15': 'Bus Line 37'
+}

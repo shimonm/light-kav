@@ -7,6 +7,7 @@ import auth
 import ride_record
 import c_lightning
 import db
+import config
 
 from classes import UserExists
 
@@ -26,6 +27,7 @@ class HowMuchHandler(web.RequestHandler):
         data = {'success': True,
                 'data': {'amount': amount_to_pay,
                          'saved': saved,
+                         'trip_name': config.ride_codes_to_names.get(ride_code, 'Bus Line 5'),
                          'payment_request': payment_request}
                 }
         self.write(json.dumps(data))

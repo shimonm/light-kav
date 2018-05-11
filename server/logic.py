@@ -59,6 +59,12 @@ def calculate_amount_and_saved(token, ride_code):
     if last_hour_and_a_half_rides:
         amount = 0
 
+    # TEMP!!!
+    amount = 1
+    # TEMP!!!
+
+
+
     if amount == 0:
         db.insert_empty_ride(token, ride_code)
 
