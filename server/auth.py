@@ -19,10 +19,8 @@ def register_new_user(user_phone_id, password):
 
     # for now this is the behavior
     if users:
-        print 'found users'
         return users[0].token
     else:
-        print 'creating'
         token = _get_hash(password)
         user = User(user_phone_id, '123123123', user_phone_id, user_phone_id, None, token)
         db.insert_user(user)

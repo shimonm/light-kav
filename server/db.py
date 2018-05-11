@@ -2,13 +2,12 @@ import psycopg2
 
 from classes import Ride, User, NoSuchUser
 
-url = '192.168.1.5'
-# url = '192.168.8.113'
+db_url = '192.168.1.5'
 dbname = 'lightkavdb'
 rides = 'rides'
 users = 'user_base'
 
-_connection = psycopg2.connect("dbname='{}' user='postgres' host='{}' password='lightkavwins'".format(dbname, url))
+_connection = psycopg2.connect("dbname='{}' user='postgres' host='{}' password='lightkavwins'".format(dbname, db_url))
 
 
 def select_all_users():
@@ -55,16 +54,12 @@ def insert_empty_ride(token, ride_code):
 def insert_ride(ride):
     cur = _connection.cursor()
     cur.execute("INSERT INTO rides (user_id, ride_code ,payment ,payment_hash) VALUES (%s, %s, %s, %s)", (
-        ride.user_id, ride.ride_code, ride.amount_paid, ride.hash))
+        ride.user_id, ride.ride_code, ride.amount_paid, ride.payment_hash))
     _connection.commit()
 
 
 def insert_user(user):
-    print 'inserting'
     cur = _connection.cursor()
-    # b = """INSERT INTO %s (user_id, id_card, last_name, first_name) VALUES (%s, %d, %s, %s)""", (
-    #     (rides, user.id, user.government_id, user.last_name, user.first_name))
-    # print b
     cur.execute("INSERT INTO user_base (user_id, id_card, last_name, first_name, token) VALUES (%s, %s, %s, %s, %s)", (
         user.id, user.government_id, user.last_name, user.first_name, user.token))
     _connection.commit()

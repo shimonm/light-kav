@@ -60,11 +60,9 @@ class OnPaymentHandler(web.RequestHandler):
         self.write("nothing here")
 
     def post(self):
+        print 'on payment activated'
         data = json.loads(self.request.body)
         ride_record.record_payed_ride(data)
-        # self.write(json.dumps({'success': True}))
-        import pprint
-        pprint.pprint(data)
         data = {'success': True,
                 'data': data}
         self.write(json.dumps(data))
