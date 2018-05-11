@@ -10,8 +10,8 @@ The project utilizes the Lightning Network (http://lightning.network/) which is 
 Light Line includes a mobile app written in react native that utilizes NFC scanning to capture ride data once the user gets on a transportation vehicle.
 The library "react-native-nfc"
 
-### Python
-
+### Server
+Light Line Server is built using a powerfull async architecture, ready to scale-up and to handle very large amounts of users.  with the [python][std] [tornado][std2] server we are keeping it open-source, while using proffesional tools. 
 
 ### postgresql DB
 
@@ -22,28 +22,10 @@ The library "react-native-nfc"
 
 [std]:https://github.com/ElementsProject/lightning
 [std2]:https://github.com/ElementsProject/lightning-charge
-
-#### Installation
-
-## Motivation
-
-A short description of the motivation behind the creation and maintenance of the project. This should explain **why** the project exists.
-
-## Installation
-
-## API Reference
-
-Depending on the size of the project, if it is small and simple enough the reference docs can be added to the README. For medium size to larger projects it is important to at least provide a link to where the API reference docs live.
-
-## Tests
-
-Describe and show how to run the tests with code examples.
-
 ## Contributors
 
 Let people know how they can dive into the project, include important links to things like issue trackers, irc, twitter accounts if applicable.
 
 ## License
-
-You may use, distribute and copy Kodi under the terms of GNU General
-Public License version 2
+  
+You may use under the terms of GNU - General Public License version 2
