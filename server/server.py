@@ -6,6 +6,7 @@ import logic
 import auth
 import ride_record
 import c_lightning
+import db
 
 from classes import UserExists
 
@@ -19,7 +20,9 @@ class HowMuchHandler(web.RequestHandler):
         ride_code = data['ride_code']
         user_token = data['user_token']
         amount_to_pay, saved = logic.calculate_amount_and_saved(user_token, ride_code)
-        payment_request = c_lightning.get_payment_request(amount_to_pay)
+        user = db.select_user_by_token(user_token)
+        user_id = user[0]
+        payment_request = c_lightning.get_payment_request(amount_to_pay, ride_code, user_id)
         data = {'success': True,
                 'data': {'amount': amount_to_pay,
                          'saved': saved,

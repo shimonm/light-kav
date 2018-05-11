@@ -3,32 +3,98 @@ import json
 from classes import Ride
 import db
 
-_data = {
-    u'created_at': 1525980441,
-    u'description': u'Lightning Charge Invoice',
-    u'expires_at': 1525984041,
-    u'id': u'0cgCQ7WNyGW6wOq4CL0Sq',
-    u'metadata': None,
-    u'msatoshi': u'1000',
-    u'msatoshi_received': u'1000',
-    u'paid_at': 1525980508,
-    u'pay_index': 5,
-    u'payreq': u'lnbcrt10n1pd0f8gepp55wpepmdl2hucfy7w363kr9kc3hnt30yl3w9gfph0ejpxugdffyrsdp8f35kw6r5de5kueeqgd5xzun8v5syjmnkda5kxegcqpxjr7a50cmqysfz24zsv0znj0tavwtvza6ugwy55ljsnhewwhjh6944pww25pahusvhfuw2aasnsyff0qrnezhzfy5vvxpp3flm424c0sqzluq7g',
-    u'quoted_amount': None,
-    u'quoted_currency': None,
-    u'rhash': u'a38390edbf55f98493ce8ea36196d88de6b8bc9f8b8a8486efcc826e21a94907',
-    u'status': u'paid'
-}
-
 
 def _get_phone_ride_code(data):
-    string = data['description']
-    hidden_data = json.loads(string)
-    phone, ride_code = hidden_data['user_id'], hidden_data['ride_code']
+    meta = data['metadata']
+    phone, ride_code = meta['user_id'], meta['ride_code']
     return phone, ride_code
 
 
 def record_payed_ride(data):
+    import pprint
+    pprint.pprint(data)
     phone, ride_code = _get_phone_ride_code(data)
     ride = Ride(None, phone, ride_code, data['msatoshi_received'], data['rhash'], None)
     db.insert_ride(ride)
+
+
+
+
+
+
+
+import requests
+import hashlib
+import string
+import random
+import json
+
+# Lightning network node of public transportation company
+url = 'http://charge.blastoise.hackbtc18.offchain.rocks/'
+username = 'api-token'
+password = 'RwhKID54f30yQ'
+headers = {
+        'Content-Type': 'application/json',
+    }
+
+
+# method that accepts an amount in milli satoshis
+# and returns the bolt11 hash as the payment request and is returned
+# to the user
+def create_invoice(amt):
+    # random label is required for creaing an invoice
+    label = "".join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+
+    data = '{"jsonrpc":"2.0","method":"invoice","params":[' + str(amt) + ',"' + label + '","my invoice desc"],"id":5}'
+
+    response = requests.post(url, headers=headers, data=data, auth=(username, password))
+    result = json.loads(response.content)
+    # print(response.content)
+    # print(response.text)
+    print(result['result']['bolt11'])
+    bolt11 = result['result']['bolt11']
+    return bolt11
+
+
+def create_charge_invoice(amt, ride_code, customer_id):
+    data = [
+      ('msatoshi', amt),
+      ('metadata[customer_id]', customer_id),
+      ('metadata[ride_code]', ride_code),
+    ]
+
+    response = requests.post(url + 'invoice', data=data, auth=(username, password))
+    invoice_json = json.loads(response.content)
+
+    return invoice_json
+
+
+# returns true if webhook for that invoice payment request was created
+def create_invoice_webhook(_id):
+    data = [
+      ('url', 'http://7abdb7b6.ngrok.io/onpayment'),
+    ]
+
+    response = requests.post(url + 'invoice/' + _id + '/webhook', data=data, auth=(username, password))
+
+    return response.text == 'Created'
+
+
+def on_payment_event(data):
+    # save payment details to database
+    # send confirmation to driver
+    pass
+
+def send_payreq_to_user(payreq):
+    #send this payload to user so they can pay
+    pass
+
+invoice_json = create_charge_invoice("1", "444", "arbok")
+print(invoice_json)
+payreq = invoice_json['payreq']
+_id = invoice_json['id']
+
+boool = create_invoice_webhook(_id)
+
+send_payreq_to_user(payreq)
+

@@ -47,7 +47,7 @@ def calculate_amount_and_saved(token, ride_code):
         diff = config.max_weekly_amount - payed_this_week
         amount = diff
 
-    today_rides = [r for r in this_week if r['time'] > today]
+    today_rides = [r for r in this_week_rides if r['time'] > today]
     payed_today = sum([int(r['amount']) for r in today_rides])
     if payed_today >= config.max_daily_amount:
         amount = 0
