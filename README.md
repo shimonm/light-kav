@@ -12,16 +12,17 @@ The library "react-native-nfc"
 
 ### Server
 Light Line Server is built using a powerfull async architecture, ready to scale-up and to handle very large amounts of users.  with the [python][std] [tornado][std2] server we are keeping it open-source, while using proffesional tools. 
-
+[std]:https://www.python.org
+[std2]:http://www.tornadoweb.org
 ### postgresql DB
 
 
 ### c-lightning and lightning-charge
-[c-lightning][std] offers a JSON-RPC integration with the Lightning Network to interact with nodes, channels, and payments
-[lightning-charge][std2] offers an HTTP API to create requests (invoice) as well as webhooks when a payment channel received payment
+[c-lightning][std3] offers a JSON-RPC integration with the Lightning Network to interact with nodes, channels, and payments
+[lightning-charge][std4] offers an HTTP API to create requests (invoice) as well as webhooks when a payment channel received payment
 
-[std]:https://github.com/ElementsProject/lightning
-[std2]:https://github.com/ElementsProject/lightning-charge
+[std3]:https://github.com/ElementsProject/lightning
+[std4]:https://github.com/ElementsProject/lightning-charge
 ## Contributors
 
 Let people know how they can dive into the project, include important links to things like issue trackers, irc, twitter accounts if applicable.
