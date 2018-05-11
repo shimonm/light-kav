@@ -44,15 +44,23 @@ class RegisterHandler(web.RequestHandler):
 
     def post(self):
         data = json.loads(self.request.body)
-        # try:
-        # success, token = auth.register_new_user(data['username'], data['password'])
-        # data = {'success': success, 'data': token}
-        token = auth.register_new_user(data['username'], data['password'])
-        data = {'success': True, 'data': token}
-        # except UserExists as e:
-        # data = {'success': False, 'error': e},
+        if config.registration_feature_complete:
 
-        self.write(json.dumps(data))
+            try:
+                success, token = auth.register_new_user(data['username'], data['password'])
+                data = {'success': success, 'data': token}
+                token = auth.register_new_user(data['username'], data['password'])
+                data = {'success': True, 'data': token}
+            except UserExists as e:
+                data = {'success': False, 'error': e},
+
+            self.write(json.dumps(data))
+
+        else:
+
+            token = auth.register_new_user(data['username'], data['password'])
+            data = {'success': True, 'data': token}
+            self.write(json.dumps(data))
 
 
 class OnPaymentHandler(web.RequestHandler):

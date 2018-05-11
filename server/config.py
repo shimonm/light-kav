@@ -1,3 +1,5 @@
+registration_feature_complete = False
+
 
 public_url = 'http://443023ec.ngrok.io'
 
